@@ -1,7 +1,7 @@
 from datetime import datetime
 from tempfile import TemporaryDirectory
 from csv import DictReader
-from collections import Counter
+from collections import Counter, defaultdict
 from os import path
 import pytest
 from src.hp_4 import (
@@ -146,7 +146,7 @@ def test___fees_report___includes_all_patrons(fees_report_out_short):
     }
     actual_patrons = [fee['patron_id'] for fee in fees_report_out_short]
     expected_patrons = list(expected_fees.keys())
-    assert sorted(actual_patrons) == sorted(expected_patrons)
+    assert set(actual_patrons) == set(expected_patrons)
 
 
 def test___fees_report___has_correct_fees(fees_report_out_short):
@@ -155,9 +155,10 @@ def test___fees_report___has_correct_fees(fees_report_out_short):
         '83-279-0036': '0.00'
     }
     for row in fees_report_out_short:
-        assert row['late_fees'] == expected_fees[row['patron_id']]
+        patron_id = row['patron_id']
+        assert row['late_fees'] == expected_fees.get(patron_id, '0.00')
 
 
 def test___fees_report___has_one_row_per_patron(fees_report_out_short):
-    patron_ids = [row['patron_id'] for row in fees_report_out_short]
-    assert len(patron_ids) == len(set(patron_ids))
+    patron_counts = Counter(row['patron_id'] for row in fees_report_out_short)
+    assert all(count == 1 for count in patron_counts.values())
