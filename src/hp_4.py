@@ -40,7 +40,9 @@ if __name__ == '__main__':
     except ImportError:
         from util import get_data_file_path
 
+    # Specify the input file path
     BOOK_RETURNS_PATH = get_data_file_path('book_returns_short.csv')
+    # Specify the output file name
     OUTFILE = 'book_fees.csv'
 
     fees_report(BOOK_RETURNS_PATH, OUTFILE)
@@ -48,5 +50,3 @@ if __name__ == '__main__':
     # Print the data written to the outfile
     with open(OUTFILE) as f:
         print(f.read())
-
-
