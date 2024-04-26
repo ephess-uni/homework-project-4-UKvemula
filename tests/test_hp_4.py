@@ -160,6 +160,7 @@ def test___fees_report___includes_all_patrons(fees_report_out_short):
 
 
 
+
 def test___fees_report___has_one_row_per_patron(fees_report_out):
     patron_counts = Counter(row['patron_id'] for row in fees_report_out)
     assert all(count == 1 for count in patron_counts.values())
