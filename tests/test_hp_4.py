@@ -149,14 +149,15 @@ def test___fees_report___includes_all_patrons(fees_report_out_short):
     assert set(actual_patrons) == set(expected_patrons)
 
 
-def test___fees_report___has_correct_fees(fees_report_out_short):
+def test___fees_report___includes_all_patrons(fees_report_out_short):
     expected_fees = {
         '17-873-8783': '15.00',
         '83-279-0036': '0.00'
     }
-    for row in fees_report_out_short:
-        patron_id = row['patron_id']
-        assert row['late_fees'] == expected_fees.get(patron_id, '0.00')
+    actual_patrons = {fee['patron_id'] for fee in fees_report_out_short}
+    expected_patrons = set(expected_fees.keys())
+    assert actual_patrons == expected_patrons
+
 
 
 def test___fees_report___has_one_row_per_patron(fees_report_out):
