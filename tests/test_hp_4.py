@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 from csv import DictReader
 from collections import defaultdict
 from pathlib import Path
@@ -77,11 +77,11 @@ def book_returns():
     return TEMP_DIR / 'book_returns.csv'
 
 @pytest.fixture
-def fees_report_out_short(book_returns_short, temp_dir):
+def fees_report_out_short(book_returns_short):
     outfile = TEMP_DIR / 'fees_report_out_short.txt'
     fees_report(
-        book_returns_short,
-        outfile
+        str(book_returns_short),
+        str(outfile)
     )
     with open(outfile) as f:
         reader = DictReader(f)
@@ -90,11 +90,11 @@ def fees_report_out_short(book_returns_short, temp_dir):
     return rows
 
 @pytest.fixture
-def fees_report_out(book_returns, temp_dir):
+def fees_report_out(book_returns):
     outfile = TEMP_DIR / 'fees_report_out.txt'
     fees_report(
-        book_returns,
-        outfile
+        str(book_returns),
+        str(outfile)
     )
     with open(outfile) as f:
         reader = DictReader(f)
@@ -102,4 +102,26 @@ def fees_report_out(book_returns, temp_dir):
 
     return rows
 
-# Remaining tests remain the same
+def test_fees_report_has_correct_fieldnames(fees_report_out_short):
+    assert 'patron_id' in fees_report_out_short[0].keys()
+    assert 'late_fees' in fees_report_out_short[0].keys()
+
+def test_fees_report_has_correct_currency_format(fees_report_out_short):
+    fees = [row['late_fees'] for row in fees_report_out_short]
+    assert all('$' not in fee for fee in fees)
+    assert all('.' in fee for fee in fees)
+    assert all(len(fee.split('.')[1]) == 2 for fee in fees)
+
+def test_fees_report_includes_all_patrons(fees_report_out_short):
+    expected_fees = {
+        '17-873-8783': '15.00',
+        '83-279-0036': '0.00'
+    }
+    actual_patrons = [fee['patron_id'] for fee in fees_report_out_short]
+    expected_patrons = list(expected_fees.keys())
+    assert set(actual_patrons) == set(expected_patrons)
+
+def test_fees_report_has_one_row_per_patron(fees_report_out):
+    from collections import Counter
+    patron_counts = Counter(row['patron_id'] for row in fees_report_out)
+    assert all(count == 1 for count in patron_counts.values())
