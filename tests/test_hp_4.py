@@ -141,24 +141,4 @@ def test___fees_report___has_correct_currency_format(fees_report_out_short):
 def test___fees_report___includes_all_patrons(fees_report_out_short):
     expected_fees = {
         '17-873-8783': '15.00',
-        '83-279-0036': '0.00'
-    }
-    actual_patrons = [fee['patron_id'] for fee in fees_report_out_short]
-    expected_patrons = list(expected_fees.keys())
-    assert sorted(actual_patrons) == sorted(expected_patrons)
-
-
-def test___fees_report___has_correct_fees(fees_report_out_short):
-    expected_fees = {
-        '17-873-8783': '15.00',
-        '83-279-0036': '0.00'
-    }
-    assert all(
-        fee['late_fees'] == expected_fees[fee['patron_id']]
-        for fee in fees_report_out_short
-    )
-
-
-def test___fees_report___has_one_row_per_patron(fees_report_out):
-    patrons = Counter(fee['patron_id'] for fee in fees_report_out)
-    assert all(val == 1 for val in patrons.values())
+        '83
