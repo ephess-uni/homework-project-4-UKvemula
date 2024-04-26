@@ -28,11 +28,19 @@ def fees_report(infile, outfile):
                 days_late = (date_returned - date_due).days
                 late_fees[row['patron_id']] += days_late * 0.25
 
+    # Include all patrons in the output, even if they have no late fees
+    all_patrons = set()
+    with open(infile, mode='r') as file:
+        reader = DictReader(file)
+        for row in reader:
+            all_patrons.add(row['patron_id'])
+
     with open(outfile, mode='w', newline='') as file:
         writer = DictWriter(file, fieldnames=['patron_id', 'late_fees'])
         writer.writeheader()
-        for patron_id, fee in late_fees.items():
-            writer.writerow({'patron_id': patron_id, 'late_fees': '{:.2f}'.format(fee)})
+        for patron_id in all_patrons:
+            writer.writerow({'patron_id': patron_id, 'late_fees': '{:.2f}'.format(late_fees.get(patron_id, 0.00))})
+
 
 if __name__ == '__main__':
     try:
