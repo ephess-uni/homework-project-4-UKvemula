@@ -130,7 +130,10 @@ def test___fees_report___includes_all_patrons(fees_report_out_short):
     }
     actual_patrons = [fee['patron_id'] for fee in fees_report_out_short]
     expected_patrons = list(expected_fees.keys())
+    print("Actual patrons:", actual_patrons)
+    print("Expected patrons:", expected_patrons)
     assert sorted(actual_patrons) == sorted(expected_patrons)
+
 
 def test___fees_report___has_correct_fees(fees_report_out_short):
     expected_fees = {
