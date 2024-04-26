@@ -104,8 +104,8 @@ def fees_report_out_short(book_returns_short, temp_dir):
         outfile
     )
     with open(outfile) as f:
-        reader = DictReader(f)
-        rows = [row for row in reader]
+       reader = DictReader(f)
+       rows = [row for row in reader]
 
     return rows
 
@@ -121,8 +121,8 @@ def fees_report_out(book_returns, temp_dir):
         outfile
     )
     with open(outfile) as f:
-        reader = DictReader(f)
-        rows = [row for row in reader]
+       reader = DictReader(f)
+       rows = [row for row in reader]
 
     return rows
 
@@ -159,6 +159,6 @@ def test___fees_report___has_correct_fees(fees_report_out_short):
         assert row['late_fees'] == expected_fees.get(patron_id, '0.00')
 
 
-def test___fees_report___has_one_row_per_patron(fees_report_out_short):
-    patron_counts = Counter(row['patron_id'] for row in fees_report_out_short)
+def test___fees_report___has_one_row_per_patron(fees_report_out):
+    patron_counts = Counter(row['patron_id'] for row in fees_report_out)
     assert all(count == 1 for count in patron_counts.values())
