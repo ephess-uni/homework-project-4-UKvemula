@@ -1,7 +1,8 @@
 from datetime import datetime, timedelta
-from csv import DictReader
-from collections import Counter, defaultdict
+from csv import DictReader, DictWriter
+from collections import defaultdict
 from os import path
+from tempfile import TemporaryDirectory
 import pytest
 from src.hp_4 import (
     reformat_dates,
@@ -28,7 +29,7 @@ expected_fixture = ['01 Oct 2000', '02 Oct 2000', '03 Oct 2000']
             (argument_fixture, expected_fixture),
     )
 )
-def test_reformat_dates(arg, expected):
+def test_reformat_dates_should_correctly_reformat(arg, expected):
     assert sorted(reformat_dates(arg)) == sorted(expected)
 
 
